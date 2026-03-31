@@ -1,0 +1,196 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red242\green242\blue242;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c90196;\cssrgb\c96078\c96078\c96078;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24\fsmilli12220 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import \{ useState \} from 'react';\
+import \{ useNavigate \} from 'react-router';\
+import \{ Search, MapPin, TrendingUp \} from 'lucide-react';\
+import \{ Input \} from '../components/ui/input';\
+import \{ Badge \} from '../components/ui/badge';\
+import \{ Card \} from '../components/ui/card';\
+import \{ DISHES, DISH_INSTANCES, getRestaurantById, getDishById \} from '../data/mock-data';\
+\
+export function HomeScreen() \{\
+  const navigate = useNavigate();\
+  const [searchQuery, setSearchQuery] = useState('');\
+  const [suggestions, setSuggestions] = useState<typeof DISHES>([]);\
+\
+  const handleSearchInput = (value: string) => \{\
+    setSearchQuery(value);\
+    if (value.length > 0) \{\
+      const filtered = DISHES.filter(dish =>\
+        dish.name.toLowerCase().includes(value.toLowerCase())\
+      );\
+      setSuggestions(filtered.slice(0, 5));\
+    \} else \{\
+      setSuggestions([]);\
+    \}\
+  \};\
+\
+  const handleDishSelect = (dishId: string) => \{\
+    navigate(`/search?dish=$\{dishId\}`);\
+    setSearchQuery('');\
+    setSuggestions([]);\
+  \};\
+\
+  const trendingInstances = DISH_INSTANCES\
+    .sort((a, b) => b.reviewCount - a.reviewCount)\
+    .slice(0, 4);\
+\
+  const topRatedInstances = DISH_INSTANCES\
+    .sort((a, b) => b.rating - a.rating)\
+    .slice(0, 4);\
+\
+  return (\
+    <div className="min-h-screen bg-gray-50 pb-20">\
+      <div className="bg-white border-b sticky top-0 z-10">\
+        <div className="p-4">\
+          <h1 className="text-2xl font-bold mb-1">DishDiscover</h1>\
+          <div className="flex items-center gap-1.5 text-sm text-gray-600">\
+            <MapPin className="w-4 h-4" />\
+            <span>New York, NY</span>\
+          </div>\
+        </div>\
+\
+        <div className="p-4 pt-0">\
+          <div className="relative">\
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />\
+            <Input\
+              type="text"\
+              placeholder="Search for a dish..."\
+              value=\{searchQuery\}\
+              onChange=\{(e) => handleSearchInput(e.target.value)\}\
+              className="pl-10 h-12 text-base"\
+            />\
+          </div>\
+\
+          \{suggestions.length > 0 && (\
+            <div className="mt-2 bg-white border rounded-lg shadow-lg">\
+              \{suggestions.map((dish) => (\
+                <button\
+                  key=\{dish.id\}\
+                  onClick=\{() => handleDishSelect(dish.id)\}\
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg border-b last:border-b-0"\
+                >\
+                  <div className="font-medium">\{dish.name\}</div>\
+                  <div className="text-sm text-gray-500">\{dish.category\}</div>\
+                </button>\
+              ))\}\
+            </div>\
+          )\}\
+        </div>\
+      </div>\
+\
+      <div className="p-4">\
+        <div className="flex items-center gap-2 mb-3">\
+          <TrendingUp className="w-5 h-5 text-orange-500" />\
+          <h2 className="font-semibold text-lg">Trending Dishes Nearby</h2>\
+        </div>\
+        <div className="space-y-3">\
+          \{trendingInstances.map((instance) => \{\
+            const dish = getDishById(instance.dishId);\
+            const restaurant = getRestaurantById(instance.restaurantId);\
+            return (\
+              <Card\
+                key=\{instance.id\}\
+                className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"\
+                onClick=\{() => navigate(`/dish/$\{instance.id\}`)\}\
+              >\
+                <div className="flex gap-3 p-3">\
+                  <img\
+                    src=\{instance.images[0]\}\
+                    alt=\{dish?.name\}\
+                    className="w-24 h-24 object-cover rounded-lg flex-shrink-0"\
+                  />\
+                  <div className="flex-1 min-w-0">\
+                    <h3 className="font-semibold truncate">\{dish?.name\}</h3>\
+                    <p className="text-sm text-gray-600 truncate">\{restaurant?.name\}</p>\
+                    <div className="flex items-center gap-2 mt-1">\
+                      <div className="flex items-center gap-1">\
+                        <span className="text-orange-500 font-semibold">\uc0\u9733 </span>\
+                        <span className="text-sm font-medium">\{instance.rating\}</span>\
+                      </div>\
+                      <span className="text-sm text-gray-500">(\{instance.reviewCount\})</span>\
+                      <span className="text-sm text-gray-400">\'95</span>\
+                      <span className="text-sm text-gray-500">\{instance.distance\} mi</span>\
+                    </div>\
+                    <div className="flex gap-1.5 mt-2 flex-wrap">\
+                      \{instance.tags.slice(0, 3).map((tag) => (\
+                        <Badge key=\{tag\} variant="secondary" className="text-xs px-2 py-0.5">\
+                          \{tag\}\
+                        </Badge>\
+                      ))\}\
+                    </div>\
+                  </div>\
+                  <div className="text-right flex-shrink-0">\
+                    <div className="font-semibold">$\{instance.price\}</div>\
+                    <div className="text-xs text-gray-500 mt-1">\
+                      \{'$'.repeat(getRestaurantById(instance.restaurantId)?.priceLevel || 1)\}\
+                    </div>\
+                  </div>\
+                </div>\
+              </Card>\
+            );\
+          \})\}\
+        </div>\
+      </div>\
+\
+      <div className="p-4 pt-0">\
+        <h2 className="font-semibold text-lg mb-3">Top-Rated This Week</h2>\
+        <div className="space-y-3">\
+          \{topRatedInstances.map((instance) => \{\
+            const dish = getDishById(instance.dishId);\
+            const restaurant = getRestaurantById(instance.restaurantId);\
+            return (\
+              <Card\
+                key=\{instance.id\}\
+                className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"\
+                onClick=\{() => navigate(`/dish/$\{instance.id\}`)\}\
+              >\
+                <div className="flex gap-3 p-3">\
+                  <img\
+                    src=\{instance.images[0]\}\
+                    alt=\{dish?.name\}\
+                    className="w-24 h-24 object-cover rounded-lg flex-shrink-0"\
+                  />\
+                  <div className="flex-1 min-w-0">\
+                    <h3 className="font-semibold truncate">\{dish?.name\}</h3>\
+                    <p className="text-sm text-gray-600 truncate">\{restaurant?.name\}</p>\
+                    <div className="flex items-center gap-2 mt-1">\
+                      <div className="flex items-center gap-1">\
+                        <span className="text-orange-500 font-semibold">\uc0\u9733 </span>\
+                        <span className="text-sm font-medium">\{instance.rating\}</span>\
+                      </div>\
+                      <span className="text-sm text-gray-500">(\{instance.reviewCount\})</span>\
+                      <span className="text-sm text-gray-400">\'95</span>\
+                      <span className="text-sm text-gray-500">\{instance.distance\} mi</span>\
+                    </div>\
+                    <div className="flex gap-1.5 mt-2 flex-wrap">\
+                      \{instance.tags.slice(0, 3).map((tag) => (\
+                        <Badge key=\{tag\} variant="secondary" className="text-xs px-2 py-0.5">\
+                          \{tag\}\
+                        </Badge>\
+                      ))\}\
+                    </div>\
+                  </div>\
+                  <div className="text-right flex-shrink-0">\
+                    <div className="font-semibold">$\{instance.price\}</div>\
+                    <div className="text-xs text-gray-500 mt-1">\
+                      \{'$'.repeat(getRestaurantById(instance.restaurantId)?.priceLevel || 1)\}\
+                    </div>\
+                  </div>\
+                </div>\
+              </Card>\
+            );\
+          \})\}\
+        </div>\
+      </div>\
+    </div>\
+  );\
+\}\
+}

@@ -1,0 +1,298 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red242\green242\blue242;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c90196;\cssrgb\c96078\c96078\c96078;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24\fsmilli12220 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import \{ Dish, Restaurant, DishInstance, Review, User \} from '../types';\
+\
+export const DISHES: Dish[] = [\
+  \{ id: '1', name: 'Lasagna', standardizedName: 'lasagna', category: 'Italian' \},\
+  \{ id: '2', name: 'Ramen', standardizedName: 'ramen', category: 'Japanese' \},\
+  \{ id: '3', name: 'Burger', standardizedName: 'burger', category: 'American' \},\
+  \{ id: '4', name: 'Margherita Pizza', standardizedName: 'margherita-pizza', category: 'Italian' \},\
+  \{ id: '5', name: 'Tacos', standardizedName: 'tacos', category: 'Mexican' \},\
+  \{ id: '6', name: 'Sushi Roll', standardizedName: 'sushi-roll', category: 'Japanese' \},\
+  \{ id: '7', name: 'Pad Thai', standardizedName: 'pad-thai', category: 'Thai' \},\
+  \{ id: '8', name: 'Chicken Wings', standardizedName: 'chicken-wings', category: 'American' \},\
+  \{ id: '9', name: 'Caesar Salad', standardizedName: 'caesar-salad', category: 'American' \},\
+  \{ id: '10', name: 'Fried Chicken', standardizedName: 'fried-chicken', category: 'American' \},\
+  \{ id: '11', name: 'Pho', standardizedName: 'pho', category: 'Vietnamese' \},\
+  \{ id: '12', name: 'Carbonara', standardizedName: 'carbonara', category: 'Italian' \},\
+  \{ id: '13', name: 'Mac and Cheese', standardizedName: 'mac-and-cheese', category: 'American' \},\
+  \{ id: '14', name: 'Steak', standardizedName: 'steak', category: 'American' \},\
+  \{ id: '15', name: 'Fish and Chips', standardizedName: 'fish-and-chips', category: 'British' \},\
+];\
+\
+export const RESTAURANTS: Restaurant[] = [\
+  \{ id: 'r1', name: "Mama's Kitchen", address: '123 Mulberry St', neighborhood: 'Little Italy', priceLevel: 2, lat: 40.7190, lng: -73.9970 \},\
+  \{ id: 'r2', name: 'Ramen House', address: '456 E 9th St', neighborhood: 'East Village', priceLevel: 1, lat: 40.7260, lng: -73.9820 \},\
+  \{ id: 'r3', name: 'The Burger Joint', address: '789 6th Ave', neighborhood: 'Midtown', priceLevel: 2, lat: 40.7590, lng: -73.9845 \},\
+  \{ id: 'r4', name: "Joe's Pizza", address: '7 Carmine St', neighborhood: 'West Village', priceLevel: 1, lat: 40.7308, lng: -74.0020 \},\
+  \{ id: 'r5', name: 'Taqueria El Sol', address: '234 E 116th St', neighborhood: 'East Harlem', priceLevel: 1, lat: 40.7970, lng: -73.9420 \},\
+  \{ id: 'r6', name: 'Sakura Sushi', address: '567 Amsterdam Ave', neighborhood: 'Upper West Side', priceLevel: 3, lat: 40.7870, lng: -73.9754 \},\
+  \{ id: 'r7', name: 'Thai Delight', address: '890 9th Ave', neighborhood: "Hell's Kitchen", priceLevel: 2, lat: 40.7630, lng: -73.9890 \},\
+  \{ id: 'r8', name: 'Wings & Things', address: '345 Bleecker St', neighborhood: 'West Village', priceLevel: 1, lat: 40.7350, lng: -74.0030 \},\
+  \{ id: 'r9', name: 'La Trattoria', address: '678 Madison Ave', neighborhood: 'Upper East Side', priceLevel: 3, lat: 40.7700, lng: -73.9650 \},\
+  \{ id: 'r10', name: 'Noodle Bar', address: '123 1st Ave', neighborhood: 'East Village', priceLevel: 2, lat: 40.7280, lng: -73.9840 \},\
+];\
+\
+export const DISH_INSTANCES: DishInstance[] = [\
+  \{\
+    id: 'di1',\
+    dishId: '1',\
+    restaurantId: 'r1',\
+    price: 18.50,\
+    rating: 4.7,\
+    reviewCount: 234,\
+    images: ['https://images.unsplash.com/photo-1560035285-64808ba47bda?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsYXNhZ25hJTIwaXRhbGlhbiUyMGZvb2R8ZW58MXx8fHwxNzc0OTY3MzI1fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['creamy', 'rich', 'homemade', 'cheesy'],\
+    distance: 0.8,\
+    wouldOrderAgainRate: 92,\
+    valueScore: 4.5,\
+    portionSize: 'L',\
+  \},\
+  \{\
+    id: 'di2',\
+    dishId: '1',\
+    restaurantId: 'r9',\
+    price: 24.00,\
+    rating: 4.8,\
+    reviewCount: 189,\
+    images: ['https://images.unsplash.com/photo-1560035285-64808ba47bda?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsYXNhZ25hJTIwaXRhbGlhbiUyMGZvb2R8ZW58MXx8fHwxNzc0OTY3MzI1fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['authentic', 'rich', 'layers', 'meaty'],\
+    distance: 2.3,\
+    wouldOrderAgainRate: 95,\
+    valueScore: 4.2,\
+    portionSize: 'M',\
+  \},\
+  \{\
+    id: 'di3',\
+    dishId: '2',\
+    restaurantId: 'r2',\
+    price: 15.00,\
+    rating: 4.6,\
+    reviewCount: 567,\
+    images: ['https://images.unsplash.com/photo-1653697469211-ae71a516b99d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyYW1lbiUyMG5vb2RsZSUyMHNvdXB8ZW58MXx8fHwxNzc0OTE4MDk3fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['spicy', 'rich broth', 'tender', 'authentic'],\
+    distance: 1.2,\
+    wouldOrderAgainRate: 88,\
+    valueScore: 4.8,\
+    portionSize: 'L',\
+  \},\
+  \{\
+    id: 'di4',\
+    dishId: '2',\
+    restaurantId: 'r10',\
+    price: 16.50,\
+    rating: 4.5,\
+    reviewCount: 423,\
+    images: ['https://images.unsplash.com/photo-1653697469211-ae71a516b99d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyYW1lbiUyMG5vb2RsZSUyMHNvdXB8ZW58MXx8fHwxNzc0OTE4MDk3fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['rich broth', 'flavorful', 'fresh', 'generous'],\
+    distance: 1.1,\
+    wouldOrderAgainRate: 85,\
+    valueScore: 4.6,\
+    portionSize: 'L',\
+  \},\
+  \{\
+    id: 'di5',\
+    dishId: '3',\
+    restaurantId: 'r3',\
+    price: 14.00,\
+    rating: 4.4,\
+    reviewCount: 892,\
+    images: ['https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXJnZXIlMjBoYW1idXJnZXIlMjBmcmllc3xlbnwxfHx8fDE3NzQ5NjczMjV8MA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['juicy', 'crispy bacon', 'fresh', 'classic'],\
+    distance: 1.5,\
+    wouldOrderAgainRate: 82,\
+    valueScore: 4.4,\
+    portionSize: 'M',\
+  \},\
+  \{\
+    id: 'di6',\
+    dishId: '4',\
+    restaurantId: 'r4',\
+    price: 6.50,\
+    rating: 4.9,\
+    reviewCount: 1234,\
+    images: ['https://images.unsplash.com/photo-1574071318508-1cdbab80d002?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaXp6YSUyMG1hcmdoZXJpdGF8ZW58MXx8fHwxNzc0ODg0Njg0fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['fresh', 'simple', 'crispy crust', 'classic'],\
+    distance: 0.5,\
+    wouldOrderAgainRate: 96,\
+    valueScore: 5.0,\
+    portionSize: 'M',\
+  \},\
+  \{\
+    id: 'di7',\
+    dishId: '5',\
+    restaurantId: 'r5',\
+    price: 4.50,\
+    rating: 4.6,\
+    reviewCount: 678,\
+    images: ['https://images.unsplash.com/photo-1707604341704-74abdc25e52a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YWNvcyUyMG1leGljYW4lMjBmb29kfGVufDF8fHx8MTc3NDk2MTU1Mnww&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['authentic', 'spicy', 'fresh', 'flavorful'],\
+    distance: 3.2,\
+    wouldOrderAgainRate: 90,\
+    valueScore: 4.9,\
+    portionSize: 'S',\
+  \},\
+  \{\
+    id: 'di8',\
+    dishId: '6',\
+    restaurantId: 'r6',\
+    price: 22.00,\
+    rating: 4.7,\
+    reviewCount: 345,\
+    images: ['https://images.unsplash.com/photo-1582450871972-ab5ca641643d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdXNoaSUyMHJvbGxzfGVufDF8fHx8MTc3NDkwMDE1NXww&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['fresh', 'creative', 'high-quality', 'delicate'],\
+    distance: 2.8,\
+    wouldOrderAgainRate: 91,\
+    valueScore: 4.0,\
+    portionSize: 'M',\
+  \},\
+  \{\
+    id: 'di9',\
+    dishId: '7',\
+    restaurantId: 'r7',\
+    price: 13.50,\
+    rating: 4.5,\
+    reviewCount: 456,\
+    images: ['https://images.unsplash.com/photo-1757845301698-da07924946a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYWQlMjB0aGFpJTIwbm9vZGxlc3xlbnwxfHx8fDE3NzQ5NDExNDN8MA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['sweet', 'spicy', 'tangy', 'fresh'],\
+    distance: 1.7,\
+    wouldOrderAgainRate: 87,\
+    valueScore: 4.5,\
+    portionSize: 'L',\
+  \},\
+  \{\
+    id: 'di10',\
+    dishId: '8',\
+    restaurantId: 'r8',\
+    price: 12.00,\
+    rating: 4.3,\
+    reviewCount: 523,\
+    images: ['https://images.unsplash.com/photo-1672856399624-61b47d70d339?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlja2VuJTIwd2luZ3MlMjBjcmlzcHl8ZW58MXx8fHwxNzc0OTMwNTI0fDA&ixlib=rb-4.1.0&q=80&w=1080'],\
+    tags: ['crispy', 'spicy', 'saucy', 'tender'],\
+    distance: 0.6,\
+    wouldOrderAgainRate: 84,\
+    valueScore: 4.7,\
+    portionSize: 'M',\
+  \},\
+];\
+\
+export const REVIEWS: Review[] = [\
+  \{\
+    id: 'rev1',\
+    dishInstanceId: 'di1',\
+    userId: 'u1',\
+    userName: 'Sarah Chen',\
+    rating: 5,\
+    wouldOrderAgain: true,\
+    value: 5,\
+    portionSize: 'L',\
+    tags: ['creamy', 'homemade', 'rich'],\
+    comment: 'Best lasagna in the city! Perfectly layered and so flavorful.',\
+    createdAt: new Date('2026-03-25'),\
+  \},\
+  \{\
+    id: 'rev2',\
+    dishInstanceId: 'di1',\
+    userId: 'u2',\
+    userName: 'Mike Rodriguez',\
+    rating: 4,\
+    wouldOrderAgain: true,\
+    value: 4,\
+    portionSize: 'L',\
+    tags: ['cheesy', 'rich'],\
+    comment: 'Great portion size, could use a bit more seasoning.',\
+    createdAt: new Date('2026-03-20'),\
+  \},\
+  \{\
+    id: 'rev3',\
+    dishInstanceId: 'di3',\
+    userId: 'u3',\
+    userName: 'Emily Park',\
+    rating: 5,\
+    wouldOrderAgain: true,\
+    value: 5,\
+    portionSize: 'L',\
+    tags: ['spicy', 'rich broth', 'authentic'],\
+    comment: 'The broth is incredible!',\
+    createdAt: new Date('2026-03-28'),\
+  \},\
+  \{\
+    id: 'rev4',\
+    dishInstanceId: 'di6',\
+    userId: 'u4',\
+    userName: 'David Kim',\
+    rating: 5,\
+    wouldOrderAgain: true,\
+    value: 5,\
+    portionSize: 'M',\
+    tags: ['fresh', 'crispy crust', 'classic'],\
+    comment: 'NYC institution for a reason. Perfect every time.',\
+    createdAt: new Date('2026-03-30'),\
+  \},\
+];\
+\
+export const USERS: User[] = [\
+  \{ id: 'u1', name: 'Sarah Chen', reviewCount: 47 \},\
+  \{ id: 'u2', name: 'Mike Rodriguez', reviewCount: 23 \},\
+  \{ id: 'u3', name: 'Emily Park', reviewCount: 89 \},\
+  \{ id: 'u4', name: 'David Kim', reviewCount: 156 \},\
+];\
+\
+export const AVAILABLE_TAGS = [\
+  'creamy',\
+  'spicy',\
+  'crispy',\
+  'rich',\
+  'fresh',\
+  'tender',\
+  'juicy',\
+  'flavorful',\
+  'authentic',\
+  'homemade',\
+  'cheesy',\
+  'tangy',\
+  'sweet',\
+  'saucy',\
+  'crunchy',\
+  'soft',\
+  'savory',\
+  'light',\
+  'hearty',\
+  'smoky',\
+];\
+\
+// Helper functions\
+export const getDishById = (id: string): Dish | undefined => \
+  DISHES.find(d => d.id === id);\
+\
+export const getRestaurantById = (id: string): Restaurant | undefined => \
+  RESTAURANTS.find(r => r.id === id);\
+\
+export const getDishInstanceById = (id: string): DishInstance | undefined => \
+  DISH_INSTANCES.find(di => di.id === id);\
+\
+export const getReviewsByDishInstanceId = (dishInstanceId: string): Review[] => \
+  REVIEWS.filter(r => r.dishInstanceId === dishInstanceId);\
+\
+export const getDishInstancesByDishId = (dishId: string): DishInstance[] => \
+  DISH_INSTANCES.filter(di => di.dishId === dishId);\
+\
+export const getUserById = (id: string): User | undefined => \
+  USERS.find(u => u.id === id);\
+\
+export const searchDishes = (query: string): Dish[] => \{\
+  const lowerQuery = query.toLowerCase();\
+  return DISHES.filter(dish => \
+    dish.name.toLowerCase().includes(lowerQuery) ||\
+    dish.standardizedName.toLowerCase().includes(lowerQuery) ||\
+    dish.category.toLowerCase().includes(lowerQuery)\
+  );\
+\};\
+}

@@ -1,0 +1,242 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red242\green242\blue242;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c90196;\cssrgb\c96078\c96078\c96078;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24\fsmilli12220 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import \{ useState, useMemo \} from 'react';\
+import \{ useSearchParams, useNavigate \} from 'react-router';\
+import \{ ArrowLeft, SlidersHorizontal \} from 'lucide-react';\
+import \{ Button \} from '../components/ui/button';\
+import \{ Badge \} from '../components/ui/badge';\
+import \{ Card \} from '../components/ui/card';\
+import \{ Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger \} from '../components/ui/sheet';\
+import \{ Select, SelectContent, SelectItem, SelectTrigger, SelectValue \} from '../components/ui/select';\
+import \{ Slider \} from '../components/ui/slider';\
+import \{ Checkbox \} from '../components/ui/checkbox';\
+import \{ getDishById, getRestaurantById, getDishInstancesByDishId \} from '../data/mock-data';\
+import \{ SortOption \} from '../types';\
+\
+export function SearchResultsScreen() \{\
+  const navigate = useNavigate();\
+  const [searchParams] = useSearchParams();\
+  const dishId = searchParams.get('dish');\
+\
+  const [sortBy, setSortBy] = useState<SortOption>('best');\
+  const [maxDistance, setMaxDistance] = useState<number>(5);\
+  const [selectedPriceLevels, setSelectedPriceLevels] = useState<number[]>([1, 2, 3]);\
+  const [isFilterOpen, setIsFilterOpen] = useState(false);\
+\
+  const dish = dishId ? getDishById(dishId) : null;\
+  const instances = dishId ? getDishInstancesByDishId(dishId) : [];\
+\
+  const filteredAndSortedInstances = useMemo(() => \{\
+    let result = instances.filter(instance => \{\
+      const restaurant = getRestaurantById(instance.restaurantId);\
+      if (!restaurant) return false;\
+\
+      if (instance.distance > maxDistance) return false;\
+\
+      if (!selectedPriceLevels.includes(restaurant.priceLevel)) return false;\
+\
+      return true;\
+    \});\
+\
+    switch (sortBy) \{\
+      case 'nearest':\
+        result.sort((a, b) => a.distance - b.distance);\
+        break;\
+      case 'highest-rated':\
+        result.sort((a, b) => b.rating - a.rating);\
+        break;\
+      case 'best-value':\
+        result.sort((a, b) => b.valueScore - a.valueScore);\
+        break;\
+      case 'best':\
+      default:\
+        result.sort((a, b) => \{\
+          const scoreA = a.rating * 0.4 + (a.reviewCount / 100) * 0.3 + a.wouldOrderAgainRate * 0.003 + a.valueScore * 0.1;\
+          const scoreB = b.rating * 0.4 + (b.reviewCount / 100) * 0.3 + b.wouldOrderAgainRate * 0.003 + b.valueScore * 0.1;\
+          return scoreB - scoreA;\
+        \});\
+    \}\
+\
+    return result;\
+  \}, [instances, sortBy, maxDistance, selectedPriceLevels]);\
+\
+  const handlePriceLevelToggle = (level: number) => \{\
+    setSelectedPriceLevels(prev =>\
+      prev.includes(level) ? prev.filter(l => l !== level) : [...prev, level]\
+    );\
+  \};\
+\
+  const clearFilters = () => \{\
+    setMaxDistance(5);\
+    setSelectedPriceLevels([1, 2, 3]);\
+  \};\
+\
+  if (!dish) \{\
+    return (\
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">\
+        <div className="text-center">\
+          <p className="text-gray-500">Dish not found</p>\
+          <Button onClick=\{() => navigate('/')\} className="mt-4">Go Home</Button>\
+        </div>\
+      </div>\
+    );\
+  \}\
+\
+  return (\
+    <div className="min-h-screen bg-gray-50 pb-20">\
+      <div className="bg-white border-b sticky top-0 z-10">\
+        <div className="flex items-center gap-3 p-4">\
+          <Button variant="ghost" size="icon" onClick=\{() => navigate(-1)\}>\
+            <ArrowLeft className="w-5 h-5" />\
+          </Button>\
+          <div className="flex-1">\
+            <h1 className="font-semibold">\{dish.name\}</h1>\
+            <p className="text-sm text-gray-500">\{filteredAndSortedInstances.length\} results</p>\
+          </div>\
+        </div>\
+\
+        <div className="flex gap-2 p-4 pt-0">\
+          <Select value=\{sortBy\} onValueChange=\{(value) => setSortBy(value as SortOption)\}>\
+            <SelectTrigger className="flex-1">\
+              <SelectValue />\
+            </SelectTrigger>\
+            <SelectContent>\
+              <SelectItem value="best">Best Overall</SelectItem>\
+              <SelectItem value="nearest">Nearest</SelectItem>\
+              <SelectItem value="highest-rated">Highest Rated</SelectItem>\
+              <SelectItem value="best-value">Best Value</SelectItem>\
+            </SelectContent>\
+          </Select>\
+\
+          <Sheet open=\{isFilterOpen\} onOpenChange=\{setIsFilterOpen\}>\
+            <SheetTrigger asChild>\
+              <Button variant="outline" size="icon">\
+                <SlidersHorizontal className="w-4 h-4" />\
+              </Button>\
+            </SheetTrigger>\
+            <SheetContent side="bottom" className="max-h-[90vh]">\
+              <SheetHeader>\
+                <SheetTitle>Filters</SheetTitle>\
+              </SheetHeader>\
+              <div className="py-6 space-y-6">\
+                <div>\
+                  <div className="flex justify-between mb-2">\
+                    <label className="text-sm font-medium">Max Distance</label>\
+                    <span className="text-sm text-gray-500">\{maxDistance\} mi</span>\
+                  </div>\
+                  <Slider\
+                    value=\{[maxDistance]\}\
+                    onValueChange=\{(value) => setMaxDistance(value[0])\}\
+                    min=\{0.5\}\
+                    max=\{10\}\
+                    step=\{0.5\}\
+                  />\
+                </div>\
+\
+                <div>\
+                  <label className="text-sm font-medium mb-3 block">Price Level</label>\
+                  <div className="space-y-2">\
+                    \{[1, 2, 3].map((level) => (\
+                      <div key=\{level\} className="flex items-center gap-2">\
+                        <Checkbox\
+                          id=\{`price-$\{level\}`\}\
+                          checked=\{selectedPriceLevels.includes(level)\}\
+                          onCheckedChange=\{() => handlePriceLevelToggle(level)\}\
+                        />\
+                        <label htmlFor=\{`price-$\{level\}`\} className="text-sm">\
+                          \{'$'.repeat(level)\}\
+                        </label>\
+                      </div>\
+                    ))\}\
+                  </div>\
+                </div>\
+\
+                <div className="flex gap-2 pt-4">\
+                  <Button variant="outline" onClick=\{clearFilters\} className="flex-1">\
+                    Clear All\
+                  </Button>\
+                  <Button onClick=\{() => setIsFilterOpen(false)\} className="flex-1">\
+                    Apply\
+                  </Button>\
+                </div>\
+              </div>\
+            </SheetContent>\
+          </Sheet>\
+        </div>\
+      </div>\
+\
+      <div className="p-4 space-y-3">\
+        \{filteredAndSortedInstances.length === 0 ? (\
+          <div className="text-center py-12">\
+            <p className="text-gray-500">No results found</p>\
+            <Button variant="outline" onClick=\{clearFilters\} className="mt-4">\
+              Clear Filters\
+            </Button>\
+          </div>\
+        ) : (\
+          filteredAndSortedInstances.map((instance, index) => \{\
+            const restaurant = getRestaurantById(instance.restaurantId);\
+            return (\
+              <Card\
+                key=\{instance.id\}\
+                className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"\
+                onClick=\{() => navigate(`/dish/$\{instance.id\}`)\}\
+              >\
+                <div className="flex gap-3 p-3">\
+                  <div className="flex flex-col items-center justify-start pt-1">\
+                    <div className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-semibold text-sm">\
+                      \{index + 1\}\
+                    </div>\
+                  </div>\
+\
+                  <img\
+                    src=\{instance.images[0]\}\
+                    alt=\{dish.name\}\
+                    className="w-28 h-28 object-cover rounded-lg flex-shrink-0"\
+                  />\
+\
+                  <div className="flex-1 min-w-0">\
+                    <h3 className="font-semibold">\{restaurant?.name\}</h3>\
+                    <p className="text-sm text-gray-500">\{restaurant?.neighborhood\}</p>\
+                    \
+                    <div className="flex items-center gap-2 mt-2">\
+                      <div className="flex items-center gap-1">\
+                        <span className="text-orange-500 font-semibold">\uc0\u9733 </span>\
+                        <span className="text-sm font-medium">\{instance.rating\}</span>\
+                      </div>\
+                      <span className="text-sm text-gray-500">(\{instance.reviewCount\})</span>\
+                    </div>\
+\
+                    <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">\
+                      <span>$\{instance.price\}</span>\
+                      <span>\'95</span>\
+                      <span>\{instance.distance\} mi</span>\
+                      <span>\'95</span>\
+                      <span>\{'$'.repeat(restaurant?.priceLevel || 1)\}</span>\
+                    </div>\
+\
+                    <div className="flex gap-1.5 mt-2 flex-wrap">\
+                      \{instance.tags.slice(0, 3).map((tag) => (\
+                        <Badge key=\{tag\} variant="secondary" className="text-xs px-2 py-0.5">\
+                          \{tag\}\
+                        </Badge>\
+                      ))\}\
+                    </div>\
+                  </div>\
+                </div>\
+              </Card>\
+            );\
+          \})\
+        )\}\
+      </div>\
+    </div>\
+  );\
+\}\
+}

@@ -1,0 +1,186 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red242\green242\blue242;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c90196;\cssrgb\c96078\c96078\c96078;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24\fsmilli12220 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import \{ useState \} from 'react';\
+import \{ useNavigate \} from 'react-router';\
+import \{ User, Star, Bookmark \} from 'lucide-react';\
+import \{ Badge \} from '../components/ui/badge';\
+import \{ Card \} from '../components/ui/card';\
+import \{ Tabs, TabsContent, TabsList, TabsTrigger \} from '../components/ui/tabs';\
+import \{ REVIEWS, getDishInstanceById, getDishById, getRestaurantById \} from '../data/mock-data';\
+import \{ format \} from 'date-fns';\
+\
+export function ProfileScreen() \{\
+  const navigate = useNavigate();\
+  const [activeTab, setActiveTab] = useState('reviews');\
+\
+  const userReviews = REVIEWS.slice(0, 2);\
+\
+  const savedDishInstanceIds = ['di1', 'di6', 'di3'];\
+  const savedDishes = savedDishInstanceIds.map(id => getDishInstanceById(id)).filter(Boolean);\
+\
+  return (\
+    <div className="min-h-screen bg-gray-50 pb-20">\
+      <div className="bg-white border-b">\
+        <div className="p-4">\
+          <h1 className="text-2xl font-bold">Profile</h1>\
+        </div>\
+      </div>\
+\
+      <div className="bg-white p-6 border-b">\
+        <div className="flex items-center gap-4">\
+          <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center">\
+            <User className="w-10 h-10 text-orange-600" />\
+          </div>\
+          <div>\
+            <h2 className="text-xl font-semibold">Sarah Chen</h2>\
+            <p className="text-gray-600">\{userReviews.length\} reviews</p>\
+          </div>\
+        </div>\
+      </div>\
+\
+      <div className="bg-white">\
+        <Tabs value=\{activeTab\} onValueChange=\{setActiveTab\} className="w-full">\
+          <TabsList className="w-full justify-start rounded-none border-b bg-white h-auto p-0">\
+            <TabsTrigger \
+              value="reviews" \
+              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-white"\
+            >\
+              Reviews\
+            </TabsTrigger>\
+            <TabsTrigger \
+              value="saved" \
+              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-white"\
+            >\
+              Saved\
+            </TabsTrigger>\
+          </TabsList>\
+\
+          <TabsContent value="reviews" className="mt-0">\
+            <div className="p-4 space-y-3">\
+              \{userReviews.length === 0 ? (\
+                <div className="text-center py-12">\
+                  <p className="text-gray-500">No reviews yet</p>\
+                </div>\
+              ) : (\
+                userReviews.map((review) => \{\
+                  const instance = getDishInstanceById(review.dishInstanceId);\
+                  const dish = instance ? getDishById(instance.dishId) : null;\
+                  const restaurant = instance ? getRestaurantById(instance.restaurantId) : null;\
+\
+                  return (\
+                    <Card\
+                      key=\{review.id\}\
+                      className="p-4 cursor-pointer hover:shadow-md transition-shadow"\
+                      onClick=\{() => navigate(`/dish/$\{instance?.id\}`)\}\
+                    >\
+                      <div className="flex gap-3">\
+                        <img\
+                          src=\{instance?.images[0]\}\
+                          alt=\{dish?.name\}\
+                          className="w-20 h-20 object-cover rounded-lg flex-shrink-0"\
+                        />\
+                        <div className="flex-1 min-w-0">\
+                          <h3 className="font-semibold truncate">\{dish?.name\}</h3>\
+                          <p className="text-sm text-gray-600 truncate">\{restaurant?.name\}</p>\
+                          \
+                          <div className="flex items-center gap-2 mt-1">\
+                            <div className="flex items-center gap-1">\
+                              <Star className="w-4 h-4 fill-orange-500 text-orange-500" />\
+                              <span className="text-sm font-medium">\{review.rating\}</span>\
+                            </div>\
+                            <span className="text-xs text-gray-500">\
+                              \{format(review.createdAt, 'MMM d, yyyy')\}\
+                            </span>\
+                          </div>\
+\
+                          <div className="flex gap-1.5 mt-2 flex-wrap">\
+                            \{review.tags.slice(0, 3).map((tag) => (\
+                              <Badge key=\{tag\} variant="secondary" className="text-xs px-2 py-0.5">\
+                                \{tag\}\
+                              </Badge>\
+                            ))\}\
+                          </div>\
+\
+                          \{review.comment && (\
+                            <p className="text-sm text-gray-700 mt-2 line-clamp-2">\
+                              \{review.comment\}\
+                            </p>\
+                          )\}\
+                        </div>\
+                      </div>\
+                    </Card>\
+                  );\
+                \})\
+              )\}\
+            </div>\
+          </TabsContent>\
+\
+          <TabsContent value="saved" className="mt-0">\
+            <div className="p-4 space-y-3">\
+              \{savedDishes.length === 0 ? (\
+                <div className="text-center py-12">\
+                  <Bookmark className="w-12 h-12 text-gray-300 mx-auto mb-3" />\
+                  <p className="text-gray-500">No saved dishes yet</p>\
+                </div>\
+              ) : (\
+                savedDishes.map((instance) => \{\
+                  if (!instance) return null;\
+                  const dish = getDishById(instance.dishId);\
+                  const restaurant = getRestaurantById(instance.restaurantId);\
+\
+                  return (\
+                    <Card\
+                      key=\{instance.id\}\
+                      className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"\
+                      onClick=\{() => navigate(`/dish/$\{instance.id\}`)\}\
+                    >\
+                      <div className="flex gap-3 p-3">\
+                        <img\
+                          src=\{instance.images[0]\}\
+                          alt=\{dish?.name\}\
+                          className="w-24 h-24 object-cover rounded-lg flex-shrink-0"\
+                        />\
+                        <div className="flex-1 min-w-0">\
+                          <h3 className="font-semibold truncate">\{dish?.name\}</h3>\
+                          <p className="text-sm text-gray-600 truncate">\{restaurant?.name\}</p>\
+                          \
+                          <div className="flex items-center gap-2 mt-1">\
+                            <div className="flex items-center gap-1">\
+                              <span className="text-orange-500 font-semibold">\uc0\u9733 </span>\
+                              <span className="text-sm font-medium">\{instance.rating\}</span>\
+                            </div>\
+                            <span className="text-sm text-gray-500">(\{instance.reviewCount\})</span>\
+                          </div>\
+\
+                          <div className="flex gap-1.5 mt-2 flex-wrap">\
+                            \{instance.tags.slice(0, 3).map((tag) => (\
+                              <Badge key=\{tag\} variant="secondary" className="text-xs px-2 py-0.5">\
+                                \{tag\}\
+                              </Badge>\
+                            ))\}\
+                          </div>\
+                        </div>\
+\
+                        <div className="text-right flex-shrink-0">\
+                          <div className="font-semibold">$\{instance.price\}</div>\
+                        </div>\
+                      </div>\
+                    </Card>\
+                  );\
+                \})\
+              )\}\
+            </div>\
+          </TabsContent>\
+        </Tabs>\
+      </div>\
+    </div>\
+  );\
+\}\
+}

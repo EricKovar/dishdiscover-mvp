@@ -1,0 +1,237 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red242\green242\blue242;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0\c90196;\cssrgb\c96078\c96078\c96078;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24\fsmilli12220 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 import \{ useState \} from 'react';\
+import \{ useParams, useNavigate \} from 'react-router';\
+import \{ ArrowLeft, Star, Upload \} from 'lucide-react';\
+import \{ Button \} from '../components/ui/button';\
+import \{ Textarea \} from '../components/ui/textarea';\
+import \{ Label \} from '../components/ui/label';\
+import \{ RadioGroup, RadioGroupItem \} from '../components/ui/radio-group';\
+import \{ Badge \} from '../components/ui/badge';\
+import \{ getDishInstanceById, getDishById, getRestaurantById, AVAILABLE_TAGS \} from '../data/mock-data';\
+\
+export function ReviewSubmitScreen() \{\
+  const \{ id \} = useParams<\{ id: string \}>();\
+  const navigate = useNavigate();\
+\
+  const instance = id ? getDishInstanceById(id) : null;\
+  const dish = instance ? getDishById(instance.dishId) : null;\
+  const restaurant = instance ? getRestaurantById(instance.restaurantId) : null;\
+\
+  const [rating, setRating] = useState<number>(0);\
+  const [wouldOrderAgain, setWouldOrderAgain] = useState<string>('');\
+  const [value, setValue] = useState<number>(0);\
+  const [portionSize, setPortionSize] = useState<string>('');\
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);\
+  const [comment, setComment] = useState('');\
+\
+  const handleStarClick = (star: number) => \{\
+    setRating(star);\
+  \};\
+\
+  const handleValueClick = (valueRating: number) => \{\
+    setValue(valueRating);\
+  \};\
+\
+  const handleTagToggle = (tag: string) => \{\
+    setSelectedTags(prev =>\
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]\
+    );\
+  \};\
+\
+  const handleSubmit = () => \{\
+    console.log(\{\
+      dishInstanceId: id,\
+      rating,\
+      wouldOrderAgain: wouldOrderAgain === 'yes',\
+      value,\
+      portionSize,\
+      tags: selectedTags,\
+      comment,\
+    \});\
+\
+    navigate(`/review-success?dish=$\{dish?.name\}&restaurant=$\{restaurant?.name\}`);\
+  \};\
+\
+  const isFormValid = rating > 0 && wouldOrderAgain && value > 0 && portionSize && selectedTags.length > 0;\
+\
+  if (!instance || !dish || !restaurant) \{\
+    return (\
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">\
+        <div className="text-center">\
+          <p className="text-gray-500">Dish not found</p>\
+          <Button onClick=\{() => navigate('/')\} className="mt-4">Go Home</Button>\
+        </div>\
+      </div>\
+    );\
+  \}\
+\
+  return (\
+    <div className="min-h-screen bg-gray-50 pb-24">\
+      <div className="sticky top-0 z-10 bg-white border-b">\
+        <div className="flex items-center gap-3 p-4">\
+          <Button variant="ghost" size="icon" onClick=\{() => navigate(-1)\}>\
+            <ArrowLeft className="w-5 h-5" />\
+          </Button>\
+          <div className="flex-1">\
+            <h1 className="font-semibold">Review</h1>\
+            <p className="text-sm text-gray-500">\{dish.name\} at \{restaurant.name\}</p>\
+          </div>\
+        </div>\
+      </div>\
+\
+      <div className="p-4 space-y-6">\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">How was it? *</Label>\
+          <div className="flex gap-2 justify-center">\
+            \{[1, 2, 3, 4, 5].map((star) => (\
+              <button\
+                key=\{star\}\
+                onClick=\{() => handleStarClick(star)\}\
+                className="transition-transform hover:scale-110"\
+              >\
+                <Star\
+                  className=\{`w-12 h-12 $\{\
+                    star <= rating\
+                      ? 'fill-orange-500 text-orange-500'\
+                      : 'fill-gray-200 text-gray-200'\
+                  \}`\}\
+                />\
+              </button>\
+            ))\}\
+          </div>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Would you order again? *</Label>\
+          <RadioGroup value=\{wouldOrderAgain\} onValueChange=\{setWouldOrderAgain\}>\
+            <div className="flex gap-3">\
+              <div className="flex-1">\
+                <RadioGroupItem value="yes" id="yes" className="peer sr-only" />\
+                <Label\
+                  htmlFor="yes"\
+                  className="flex items-center justify-center h-12 border-2 rounded-lg cursor-pointer peer-data-[state=checked]:border-orange-500 peer-data-[state=checked]:bg-orange-50"\
+                >\
+                  Yes\
+                </Label>\
+              </div>\
+              <div className="flex-1">\
+                <RadioGroupItem value="no" id="no" className="peer sr-only" />\
+                <Label\
+                  htmlFor="no"\
+                  className="flex items-center justify-center h-12 border-2 rounded-lg cursor-pointer peer-data-[state=checked]:border-orange-500 peer-data-[state=checked]:bg-orange-50"\
+                >\
+                  No\
+                </Label>\
+              </div>\
+            </div>\
+          </RadioGroup>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Value for money *</Label>\
+          <div className="flex gap-2">\
+            \{[1, 2, 3, 4, 5].map((val) => (\
+              <button\
+                key=\{val\}\
+                onClick=\{() => handleValueClick(val)\}\
+                className=\{`flex-1 h-12 border-2 rounded-lg font-semibold transition-colors $\{\
+                  val <= value\
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'\
+                    : 'border-gray-200 text-gray-500'\
+                \}`\}\
+              >\
+                \{val\}\
+              </button>\
+            ))\}\
+          </div>\
+          <div className="flex justify-between text-xs text-gray-500 mt-2">\
+            <span>Poor</span>\
+            <span>Excellent</span>\
+          </div>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Portion size *</Label>\
+          <RadioGroup value=\{portionSize\} onValueChange=\{setPortionSize\}>\
+            <div className="flex gap-3">\
+              \{['S', 'M', 'L'].map((size) => (\
+                <div key=\{size\} className="flex-1">\
+                  <RadioGroupItem value=\{size\} id=\{size\} className="peer sr-only" />\
+                  <Label\
+                    htmlFor=\{size\}\
+                    className="flex items-center justify-center h-12 border-2 rounded-lg cursor-pointer peer-data-[state=checked]:border-orange-500 peer-data-[state=checked]:bg-orange-50 font-semibold"\
+                  >\
+                    \{size\}\
+                  </Label>\
+                </div>\
+              ))\}\
+            </div>\
+          </RadioGroup>\
+          <div className="flex justify-between text-xs text-gray-500 mt-2">\
+            <span>Small</span>\
+            <span>Medium</span>\
+            <span>Large</span>\
+          </div>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Describe it (select all that apply) *</Label>\
+          <div className="flex flex-wrap gap-2">\
+            \{AVAILABLE_TAGS.map((tag) => (\
+              <Badge\
+                key=\{tag\}\
+                variant=\{selectedTags.includes(tag) ? 'default' : 'outline'\}\
+                className="px-3 py-2 cursor-pointer hover:bg-orange-100"\
+                onClick=\{() => handleTagToggle(tag)\}\
+              >\
+                \{tag\}\
+              </Badge>\
+            ))\}\
+          </div>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Add a photo (optional)</Label>\
+          <button className="w-full h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors">\
+            <Upload className="w-6 h-6" />\
+            <span className="text-sm">Tap to upload</span>\
+          </button>\
+        </div>\
+\
+        <div className="bg-white rounded-lg p-4">\
+          <Label className="text-base font-semibold mb-3 block">Additional comments (optional)</Label>\
+          <Textarea\
+            value=\{comment\}\
+            onChange=\{(e) => setComment(e.target.value)\}\
+            placeholder="Share more details about your experience..."\
+            rows=\{4\}\
+            className="resize-none"\
+          />\
+          <div className="text-xs text-gray-500 mt-2 text-right">\
+            \{comment.length\}/500\
+          </div>\
+        </div>\
+      </div>\
+\
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">\
+        <Button\
+          onClick=\{handleSubmit\}\
+          disabled=\{!isFormValid\}\
+          className="w-full h-12"\
+          size="lg"\
+        >\
+          Submit Review\
+        </Button>\
+      </div>\
+    </div>\
+  );\
+\}\
+}
